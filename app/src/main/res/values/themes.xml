@@ -13,4 +13,28 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="myDialogTheme" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="colorAccent">@color/purple_2</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:colorControlActivated">@color/purple_1</item>
+        <item name="android:textColorPrimary">@color/purple_4</item>
+        <item name="android:textColorSecondary">@color/purple_5</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/AppTheme.Alert.Button.Positive</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/AppTheme.Alert.Button.Negative</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/AppTheme.Alert.Button.Neutral</item>
+    </style>
+
+    <style name="AppTheme.Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/purple_4</item>
+    </style>
+
+    <style name="AppTheme.Alert.Button.Negative" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/purple_4</item>
+    </style>
+
+    <style name="AppTheme.Alert.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/purple_4</item>
+    </style>
+
 </resources>
