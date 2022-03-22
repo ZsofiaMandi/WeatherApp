@@ -3,6 +3,7 @@ package zsofi.applications.weatherapp.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private var binding : ActivityMainBinding? = null
 
     private lateinit var mFusedLocationClient : FusedLocationProviderClient
+    private var customProgressDialog: Dialog? = null
 
     private val mLocationCallBack = object : LocationCallback(){
         override fun onLocationResult(locationResult: LocationResult) {
@@ -75,6 +77,8 @@ class MainActivity : AppCompatActivity() {
                 latitude, longitude, Constants.METRIC_UNIT, Constants.APP_ID
             )
 
+            showProgressDialog(this)
+            // This is where we start doing stuff in the background
             listCall.enqueue(object : Callback<WeatherResponse>{
                 override fun onResponse(
                     call: Call<WeatherResponse>,
@@ -97,10 +101,12 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    cancelProgressDialog()
                 }
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
                     Log.e("Errorrrr", t.message.toString())
+                    cancelProgressDialog()
                 }
 
             })
@@ -192,6 +198,21 @@ class MainActivity : AppCompatActivity() {
             }.setNegativeButton("Cancel"){dialog, _ ->
                 dialog.dismiss()
             }.show()
+    }
+
+    // Function to show Progress dialog
+    fun showProgressDialog(context: Context){
+        customProgressDialog = Dialog(context)
+        customProgressDialog?.setContentView(R.layout.dialog_custom_progress)
+        customProgressDialog?.setCanceledOnTouchOutside(false)
+        customProgressDialog?.show()
+    }
+    // Function to dismiss Progress dialog
+    fun cancelProgressDialog(){
+        if(customProgressDialog != null){
+            customProgressDialog?.dismiss()
+            customProgressDialog = null
+        }
     }
 
     override fun onDestroy() {
