@@ -10,6 +10,7 @@ import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 .build()
 
             val service : WeatherService = retrofit
-                .create<WeatherService>(WeatherService::class.java)
+                .create(WeatherService::class.java)
 
             val listCall: Call<WeatherResponse> = service.getWeather(
                 latitude, longitude, Constants.METRIC_UNIT, Constants.APP_ID
@@ -85,11 +86,11 @@ class MainActivity : AppCompatActivity() {
                     response: Response<WeatherResponse>
                 ) {
                     if(response.isSuccessful){
-                        val weatherList: WeatherResponse? = response.body()
+                        val weatherList: WeatherResponse = response.body()!!
                         Log.i("Response Result", "$weatherList")
+                        setupUI(weatherList)
                     }else{
-                        val rc = response.code()
-                        when(rc){
+                        when(response.code()){
                             400 -> {
                                 Log.e("Error 400", "Bad Connection")
                             }
@@ -201,18 +202,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Function to show Progress dialog
-    fun showProgressDialog(context: Context){
+    private fun showProgressDialog(context: Context){
         customProgressDialog = Dialog(context)
         customProgressDialog?.setContentView(R.layout.dialog_custom_progress)
         customProgressDialog?.setCanceledOnTouchOutside(false)
         customProgressDialog?.show()
     }
     // Function to dismiss Progress dialog
-    fun cancelProgressDialog(){
+    private fun cancelProgressDialog(){
         if(customProgressDialog != null){
             customProgressDialog?.dismiss()
             customProgressDialog = null
         }
+    }
+
+    private fun setupUI(weatherList: WeatherResponse){
+        for(i in weatherList.weather.indices){
+            Log.i("Weather Name", weatherList.weather.toString())
+            binding?.tvMain?.text = weatherList.weather[i].main
+            binding?.tvMainDescription?.text = weatherList.weather[i].description
+            var unit: String
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                unit = getUnit(application.resources.configuration.locales[0].country.toString())
+            }else{
+                unit = getUnit(application.resources.configuration.locale.country.toString())
+            }
+            binding?.tvTemp?.text = "${weatherList.main.temp} $unit"
+        }
+    }
+
+    private fun getUnit(value: String) : String{
+        var tempValue = "°C"
+        if ("US" == value || "LR" == value || "MM" == value){
+            tempValue = "°F"
+        }
+        return tempValue
     }
 
     override fun onDestroy() {

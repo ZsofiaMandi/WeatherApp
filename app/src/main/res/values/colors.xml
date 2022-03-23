@@ -13,6 +13,7 @@
     <color name="purple_3">#3d1e6d</color>
     <color name="purple_2">#8874a3</color>
     <color name="purple_1">#e4dcf1</color>
+    <color name="background_color">#FCFBFF</color>
 
 
 </resources>

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="please_wait">Please Wait..</string>
+    <string name="image_contentDescription">image</string>
+    <string name="km_per_hour">km/hour</string>
+    <string name="action_refresh">Refresh</string>\
 </resources>
