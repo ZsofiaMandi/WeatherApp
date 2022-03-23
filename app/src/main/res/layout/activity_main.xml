@@ -160,8 +160,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
-                        android:textColor="@color/purple_4"
-                        android:textSize="@dimen/label_text_size"
+                        android:textColor="@color/purple_5"
+                        android:textSize="16.5sp"
                         android:textStyle="bold"
                         tools:text="Minimum" />
 
@@ -173,6 +173,9 @@
                         android:textColor="@color/purple_5"
                         android:textSize="@dimen/value_text_size"
                         tools:text="Maximum" />
+
+
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -307,7 +310,7 @@
                         android:id="@+id/iv_sunrise"
                         android:layout_width="@dimen/identification_image_size"
                         android:layout_height="@dimen/identification_image_size"
-                        android:layout_marginEnd="@dimen/identification_image_marginEnd"
+                        android:layout_marginHorizontal="@dimen/sunset_sunrise_margin_horizontal"
                         android:contentDescription="@string/image_contentDescription"
                         app:srcCompat="@drawable/sunrise" />
 
@@ -317,6 +320,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/purple_5"
                         android:textSize="@dimen/value_text_size"
+                        android:gravity="center"
                         tools:text="Sunrise" />
                 </LinearLayout>
 
@@ -330,7 +334,7 @@
                         android:id="@+id/iv_sunset"
                         android:layout_width="@dimen/identification_image_size"
                         android:layout_height="@dimen/identification_image_size"
-                        android:layout_marginEnd="@dimen/identification_image_marginEnd"
+                        android:layout_marginHorizontal="@dimen/sunset_sunrise_margin_horizontal"
                         android:contentDescription="@string/image_contentDescription"
                         app:srcCompat="@drawable/sunset" />
 
@@ -339,6 +343,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/purple_5"
+                        android:gravity="center"
                         android:textSize="@dimen/value_text_size"
                         tools:text="Sunset" />
                 </LinearLayout>

@@ -28,7 +28,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import zsofi.applications.weatherapp.R
 import zsofi.applications.weatherapp.activities.models.WeatherResponse
 import zsofi.applications.weatherapp.activities.network.WeatherService
+import zsofi.applications.weatherapp.activities.utils.Constants
+import zsofi.applications.weatherapp.activities.utils.GetAddressFromLatLng
 import zsofi.applications.weatherapp.databinding.ActivityMainBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,6 +49,17 @@ class MainActivity : AppCompatActivity() {
             Log.i("Current Latitude", "$mLatitude")
             Log.i("Current Longitude", "$mLongitude")
             getLocationWeatherDetails(mLatitude, mLongitude)
+            val addressTask = GetAddressFromLatLng(
+                this@MainActivity, mLatitude, mLongitude)
+            addressTask.setAddressListener(object: GetAddressFromLatLng.AddressListener{
+                override fun onAddressFound(address: String?){
+                    binding?.tvName?.text = address
+                }
+                override fun onError(){
+                    Log.e("Get Address:: ", "Something went wrong")
+                }
+            })
+            addressTask.getAddress()
         }
     }
 
@@ -216,19 +231,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupUI(weatherList: WeatherResponse){
         for(i in weatherList.weather.indices){
             Log.i("Weather Name", weatherList.weather.toString())
             binding?.tvMain?.text = weatherList.weather[i].main
             binding?.tvMainDescription?.text = weatherList.weather[i].description
-            var unit: String
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                unit = getUnit(application.resources.configuration.locales[0].country.toString())
-            }else{
-                unit = getUnit(application.resources.configuration.locale.country.toString())
-            }
-            binding?.tvTemp?.text = "${weatherList.main.temp} $unit"
         }
+        var unit: String
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            unit = getUnit(application.resources.configuration.locales[0].country.toString())
+        }else{
+            unit = getUnit(application.resources.configuration.locale.country.toString())
+        }
+        binding?.tvTemp?.text = "${weatherList.main.temp} $unit"
+
+        binding?.tvSunriseTime?.text = unixTime(weatherList.sys.sunrise)
+        binding?.tvSunsetTime?.text = unixTime(weatherList.sys.sunset)
+
+        val minTemp = weatherList.main.temp_min.toString().substring(0,4)
+        val maxTemp = weatherList.main.temp_max.toString().substring(0,4)
+
+        binding?.tvMin?.text = "min $minTemp $unit "
+        binding?.tvMax?.text = "max $maxTemp $unit "
+
+        binding?.tvHumidity?.text = "${weatherList.main.humidity}%"
+
+        binding?.tvSpeed?.text = weatherList.wind.speed.toString()
+        //binding?.tvName?.text = weatherList.name
+
+        val locale = Locale("", weatherList.sys.country)
+        binding?.tvCountry?.text = locale.getDisplayCountry()
+
     }
 
     private fun getUnit(value: String) : String{
@@ -237,6 +271,13 @@ class MainActivity : AppCompatActivity() {
             tempValue = "°F"
         }
         return tempValue
+    }
+    private fun unixTime(timex: Long) : String?{
+        val date = Date(timex * 1000L)
+        val sdf = SimpleDateFormat("HH:mm")
+        // Setting the default timezone of the user
+        sdf.timeZone = TimeZone.getDefault()
+        return sdf.format(date)
     }
 
     override fun onDestroy() {

@@ -1,4 +1,4 @@
-package zsofi.applications.weatherapp.activities
+package zsofi.applications.weatherapp.activities.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
