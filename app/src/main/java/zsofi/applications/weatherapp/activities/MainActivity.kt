@@ -31,8 +31,11 @@ import zsofi.applications.weatherapp.activities.network.WeatherService
 import zsofi.applications.weatherapp.activities.utils.Constants
 import zsofi.applications.weatherapp.activities.utils.GetAddressFromLatLng
 import zsofi.applications.weatherapp.databinding.ActivityMainBinding
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
@@ -237,6 +240,22 @@ class MainActivity : AppCompatActivity() {
             Log.i("Weather Name", weatherList.weather.toString())
             binding?.tvMain?.text = weatherList.weather[i].main
             binding?.tvMainDescription?.text = weatherList.weather[i].description
+            when (weatherList.weather[i].icon) {
+                "01d" -> binding?.ivMain?.setImageResource(R.drawable.sunny)
+                "02d" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "03d" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "04d" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "04n" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "10d" -> binding?.ivMain?.setImageResource(R.drawable.rain)
+                "11d" -> binding?.ivMain?.setImageResource(R.drawable.storm)
+                "01n" -> binding?.ivMain?.setImageResource(R.drawable.snowflake)
+                "02n" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "03n" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "10n" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "11n" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+                "13n" -> binding?.ivMain?.setImageResource(R.drawable.rain)
+                "50d" -> binding?.ivMain?.setImageResource(R.drawable.cloud)
+            }
         }
         var unit: String
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -244,7 +263,8 @@ class MainActivity : AppCompatActivity() {
         }else{
             unit = getUnit(application.resources.configuration.locale.country.toString())
         }
-        binding?.tvTemp?.text = "${weatherList.main.temp} $unit"
+        val temp = weatherList.main.temp.toString().substring(0,4)
+        binding?.tvTemp?.text = "$temp $unit"
 
         binding?.tvSunriseTime?.text = unixTime(weatherList.sys.sunrise)
         binding?.tvSunsetTime?.text = unixTime(weatherList.sys.sunset)
@@ -257,11 +277,12 @@ class MainActivity : AppCompatActivity() {
 
         binding?.tvHumidity?.text = "${weatherList.main.humidity}%"
 
-        binding?.tvSpeed?.text = weatherList.wind.speed.toString()
-        //binding?.tvName?.text = weatherList.name
+        val speed = (weatherList.wind.speed * 3.6)
+        val roundedSpeed = (speed * 100.0).roundToInt() / 100.0
+        binding?.tvSpeed?.text = roundedSpeed.toString()
 
         val locale = Locale("", weatherList.sys.country)
-        binding?.tvCountry?.text = locale.getDisplayCountry()
+        binding?.tvCountry?.text = locale.displayCountry
 
     }
 
